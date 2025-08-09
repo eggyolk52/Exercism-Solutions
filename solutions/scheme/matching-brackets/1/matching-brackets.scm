@@ -1,0 +1,22 @@
+(import (rnrs))
+
+(define (pairs? opening closing)
+  (or (and (char=? #\( opening)
+           (char=? #\) closing))
+      (and (char=? #\[ opening)
+           (char=? #\] closing))
+      (and (char=? #\{ opening)
+           (char=? #\} closing))))
+
+(define (balanced? str)
+  (let ((len (string-length str))
+        (stack '()))
+    (for-each (lambda (char)
+                (if (member char '(#\( #\[ #\{ #\) #\] #\}))
+                    (set! stack (cons char stack)))
+                (if (and (>= (length stack) 2)
+                         (pairs? (car (cdr stack)) (car stack)))
+                    (begin
+                      (set! stack (cddr stack)))))
+              (string->list str))
+    (null? stack)))
